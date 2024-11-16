@@ -1,22 +1,12 @@
+KellyCode is updating THREE to, eventually, the current version witmodule conversion - just for fun
+
 Chess3D
 =======
 
-HTML5/WebGL 3D Chess Game
+3D Chess Game Powered by JavaScript AI
 
-Using the pretty good [javascript chess AI developped by Gary Linscott][1], I developped an interactive 3D chessboard with some UI to start a game and undo, as well as save and loading in [PGN][2] format.
+Some resources used in this project were developed by: **Gary Linscott**, **FrenchYann**.
 
-Little picture for advertisement purpose:
-![enter image description here][3]
+Game by: **luciferreeves**
 
-My code should be thoroughly commented.
-
-You can try it [here][4]
-
-
-Enjoy (:
-
-
-  [1]: https://github.com/glinscott/Garbochess-JS
-  [2]: http://en.wikipedia.org/wiki/Portable_Game_Notation
-  [3]: http://yanngranjon.com/static/games/chess3D/screenshot.jpg
-  [4]: http://yanngranjon.com/static/games/chess3D/
+Play it here: [https://luciferreeves.github.io/Chess3D/]

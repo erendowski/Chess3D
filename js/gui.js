@@ -49,14 +49,14 @@
 			.attr("id","gui");
 
 		$("<p>")
-			.text("menu")
+			.text("Menu")
 			.appendTo($gui);
 
 		var $menudiv = $("<div>").appendTo($gui);
 
 		var $menu = $("<ul>").appendTo($menudiv);
 
-		makeButton("NewGame",newGameDialog,$menu);
+		makeButton("New Game",newGameDialog,$menu);
 		makeButton("Undo",undo,$menu);
 		makeButton("Load",loadDialog,$menu);
 		makeButton("Save",save,$menu);
@@ -88,7 +88,7 @@
 			.attr("cols","16")
 			.attr("rows","10")
 			.attr("readonly","readonly")
-			.appendTo($menudiv);
+			//.appendTo($menudiv);
 
 
 		$("body").append($gui);

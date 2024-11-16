@@ -166,7 +166,7 @@ function createChessBoard(size) {
 
 		cell = new Cell(i);
 		square = createCell(cellSize,1-(i+row)%2);
-		square.position = cell.getWorldPosition();
+		square.position.copy(cell.getWorldPosition());
 		square.name = cell.position;
 
 		lChessBoard.add(square);
@@ -221,134 +221,8 @@ function createChessBoard(size) {
 	return lChessBoard;
 }
 
-function createFloor(size,chessboardSize) {
-	// The floor is a fake plane with a hole in it to allow
-	// for the fake reflexion trick to work
-	// so we build it vertices by vertices
-
-	// material
-	var tiling = 30*size/1000;
-	var material = new THREE.MeshPhongMaterial({
-		color:0xffffff,
-		wireframe:WIREFRAME	,
-		specular:0xaaaaaa,
-		shininess:30
-
-	});
-	var diff  = textures['texture/floor.jpg'];
-	var spec  = textures['texture/floor_S.jpg'];
-	var norm  = textures['texture/floor_N.jpg'];
-	var light = textures['texture/fakeShadow.jpg'];
-
-	diff.tile(tiling);
-	spec.tile(tiling);
-	norm.tile(tiling);
-	light.format = THREE.RGBFormat;
-
-	material.map = diff;
-	material.normalMap = norm;
-	material.normalScale.set(0.6,0.6);
-	material.specularMap = spec;
-	material.lightMap = light;
-
-	// geometry
-	var halfBoard = chessboardSize/2;
-	var halfSize  = size/2;
-
-	var floorGeo = new THREE.Geometry();
-	// outter vertices
-	floorGeo.vertices.push(new THREE.Vector3(-halfSize,0,-halfSize));
-	floorGeo.vertices.push(new THREE.Vector3( halfSize,0,-halfSize));
-	floorGeo.vertices.push(new THREE.Vector3( halfSize,0, halfSize));
-	floorGeo.vertices.push(new THREE.Vector3(-halfSize,0, halfSize));
-	// hole vertices
-	floorGeo.vertices.push(new THREE.Vector3(-halfBoard,0,-halfBoard));
-	floorGeo.vertices.push(new THREE.Vector3( halfBoard,0,-halfBoard));
-	floorGeo.vertices.push(new THREE.Vector3( halfBoard,0, halfBoard));
-	floorGeo.vertices.push(new THREE.Vector3(-halfBoard,0, halfBoard));
-
-	floorGeo.faceVertexUvs[ 0 ] = [];
-	floorGeo.faceVertexUvs[ 1 ] = [];
-
-    /*
-     *        vertices         uvs-lightmap
-     *      0-----------1     80-----------80   
-     *      |\         /|      |\         /| 
-     *      | \       / |      | \       / | 
-     *      |  \     /  |      |  \     /  |
-     *      |   4---5   |      |   0---0   |
-     *      |   |   |   |      |   |   |   |
-     *      |   7---6   |      |   0---0   |
-     *      |  /     \  |      |  /     \  |
-     *      | /       \ |      | /       \ |
-     *      |/         \|      |/         \|
-     *      3-----------2     80-----------80
-     */
-
-    // all normals just points upward
-	var normal = new THREE.Vector3( 0, 1, 0 );
-
-	// list of vertex index for each face
-	var faces = [
-		[0,4,5,1],
-		[1,5,6,2],
-		[2,6,7,3],
-		[3,7,4,0]
-	];
-
-	faces.forEach( function(f) {
-		var uvs1 = [];
-		var uvs2 = [];
-		var lightU,lightV;
-		f.forEach(function(v,i) {
-			// we linearily transform positions
-			// from a -halfSize-halfSize space
-			// to a 0-1 space
-			uvs1.push(new THREE.Vector2(
-				(floorGeo.vertices[v].x+halfSize)/size,
-				(floorGeo.vertices[v].z+halfSize)/size
-			));
-			lightU = (v < 4) ? 80 : 0;
-			lightV = (i < 2) ? 0 : 1;
-			uvs2.push(new THREE.Vector2(lightU,lightV));
-		});
-
-		// we create a new face folowing the faces list
-		var face = new THREE.Face4(
-			f[0],f[1],f[2],f[3]
-		);
-
-		// and apply normals (without this, no proper lighting)
-		face.normal.copy( normal );
-		face.vertexNormals.push(
-			normal.clone(),
-			normal.clone(),
-			normal.clone(),
-			normal.clone()
-		);
-
-		// add the face to the geometry's faces list
-		floorGeo.faces.push(face);
-
-		// add uv coordinates to uv channels.
-		floorGeo.faceVertexUvs[ 0 ].push(uvs1); // for diffuse/normal
-		floorGeo.faceVertexUvs[ 1 ].push(uvs2); // for lightmap
-
-	});
-
-	// not sure it's needed but since it's in THREE.PlaneGeometry...
-	floorGeo.computeCentroids();
-
-	var floor = new THREE.Mesh(floorGeo,material);
-
-	if(SHADOW) {
-		floor.receiveShadow = true;
-	}
-
-
-	floor.name = "floor";
-	return floor;
-}
+// KellyCode Removed createFloor() as it was an extremely
+// elaborate method just to make a plane, will be added back later
 
 // special highlighting materials
 var validCellMaterial = null;
