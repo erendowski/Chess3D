@@ -446,11 +446,11 @@ THREE.OrbitAndPanControls = function ( object, domElement ) {
 
 	this.domElement.addEventListener( 'contextmenu', function ( event ) { event.preventDefault(); }, false );
 	this.domElement.addEventListener( 'mousedown', onMouseDown, false );
-	this.domElement.addEventListener( 'mousewheel', onMouseWheel, false );
+	this.domElement.addEventListener( 'mousewheel', onMouseWheel, { passive: true} );
 	this.domElement.addEventListener( 'DOMMouseScroll', onMouseWheel, false ); // firefox
 
-	this.domElement.addEventListener( 'touchstart', touchstart, false );
+	this.domElement.addEventListener( 'touchstart', touchstart, { passive: true} );
 	this.domElement.addEventListener( 'touchend', touchend, false );
-	this.domElement.addEventListener( 'touchmove', touchmove, false );
+	this.domElement.addEventListener( 'touchmove', touchmove, { passive: true} );
 
 };
