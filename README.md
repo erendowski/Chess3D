@@ -1,4 +1,4 @@
-KellyCode is updating THREE to, eventually, the current version with module conversion - just for fun
+KellyCode is gradually updating this to the THREE current version with modules - just for fun
 
 Chess3D
 =======
