@@ -77,8 +77,16 @@ var levels = [
 
         // RENDERER
         renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.gammaInput = true;
-        renderer.gammaOutput = true;
+
+        // KellyCode: Deprecated r115
+        //renderer.gammaInput = true;
+        //renderer.gammaOutput = true;
+
+        // Suggested but looks washed out unless I add
+        // "texture.encoding = THREE.sRGBEncoding;"
+        // to the texture load process, however, I'm not seeing a gain
+        renderer.outputEncoding = THREE.sRGBEncoding; 
+
         renderer.setSize(canvasWidth, canvasHeight);
 
         if (SHADOW) {
@@ -94,7 +102,7 @@ var levels = [
         // CAMERA
         camera = new THREE.PerspectiveCamera(45, canvasRatio, 1, 40000);
         // CONTROLS
-        cameraControls = new THREE.OrbitAndPanControls(camera, renderer.domElement);
+        cameraControls = new THREE.OrbitControls(camera, renderer.domElement);
         // limitations
         cameraControls.minPolarAngle = 0;
         cameraControls.maxPolarAngle = (80 * Math.PI) / 180;

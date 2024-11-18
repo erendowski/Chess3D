@@ -71,6 +71,7 @@ var textures = {};
                 url,
                 // onLoad callback
                 function (texture) {
+                    texture.encoding = THREE.sRGBEncoding;
                     textures[url] = texture;
                     loaded++;
                     checkLoad();

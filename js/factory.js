@@ -110,6 +110,7 @@ function initPieceFactory () {
 	window.createPiece = createPiece;
 }
 
+// cells are the squares on the innder board
 function initCellFactory() {
 
 	var materials = [];
@@ -134,12 +135,15 @@ function initCellFactory() {
 			specular:[0xAAAAAA,0x444444][c],
 			shininess:30.0,
 			wireframe:WIREFRAME,
-			transparent:true,
+			// removed piece reflections so nothing to see
+			transparent:false,
 			map:diff,
 			specularMap:spec,
-			normalMap:norm,
-			//blending: THREE.AdditiveBlending,
-			opacity:0.75
+			normalMap:norm
+			// AdditiveBlending is too bright and washed out
+			// blending: THREE.AdditiveBlending,
+			// removed reflections so nothing to see
+			//opacity:0.75
 		});
 		//materials[c].normalScale.set(0.5,0.5);
 	}
