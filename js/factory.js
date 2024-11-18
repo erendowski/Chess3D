@@ -16,15 +16,18 @@
 "use strict";
 var geometries = {};
 var textures = {};
+
 function initPieceFactory () {
 
 	// common textures
-	var tiling = 4;
+	var tiling = 10;
 	var colors = [];
+	
 	for(var c = 0; c<2; c++) {
 		colors[c] = textures['texture/wood-'+c+'.jpg'].clone();
 		colors[c].tile(tiling);
 	}
+
 	var norm = textures['texture/wood_N.jpg'].clone();
 	norm.tile(tiling);
 	var spec = textures['texture/wood_S.jpg'].clone();
@@ -32,8 +35,10 @@ function initPieceFactory () {
 
 	function createPiece(name,color) {
 		var size = BOARD_SIZE/COLS * PIECE_SIZE;
+
 		// container for the piece and its reflexion
 		var piece = new THREE.Object3D();
+
 		// base material for all the piece (only lightmap changes)
 		var material = new THREE.MeshPhongMaterial({
 			color:0xffffff,
@@ -44,34 +49,52 @@ function initPieceFactory () {
 			specularMap:spec,
 			wireframe:WIREFRAME
 		});
+
 		material.normalScale.set(0.3,0.3);
 
 		// urls of geometry and lightmap
-		var urlJson = '3D/json/'+name+'.json';
+		var urlGlb = '3D/glb/'+name+'.glb';
 		var urlAO   = 'texture/'+name+'-ao.jpg';
 
-		var geo = geometries[urlJson];
-		// no need to clone this texture
-		// since its pretty specific
-		var light = textures[urlAO];
-		light.format = THREE.LuminanceFormat;
-
-		material.lightMap = light;
+		var geo = geometries[urlGlb];
+		// the lightmap breaks the texture
+		//var light = textures[urlAO];
+		//light.format = THREE.LuminanceFormat;
+		//material.lightMap = light;
 
 		var mesh  = new THREE.Mesh(geo,material);
+
 		if (SHADOW) {
 			mesh.castShadow = true;
 			mesh.receiveShadow = true;
 		}
-		mesh.scale.set(size,size,size);
-		// we rotate pieces so they face each other (mostly relevant for knight)
-		mesh.rotation.y += (color == WHITE) ? -Math.PI/2 : Math.PI/2;
+
+		// king and queen are too large
+		if(name === "queen" || name == "king") {
+			let rScale = 0.75;
+			mesh.scale.set(size * rScale,size,size * rScale);
+		} else {
+			mesh.scale.set(size,size,size);
+		}
+
+		// rotate the knight properly
+		if(name === "knight") {
+			mesh.rotation.x += Math.PI/2;
+			mesh.rotation.z += (color == WHITE) ? Math.PI/2 : -Math.PI/2;
+		}
+
+		// KellyCode: Conflicting (flashy) with the board so moved up a bit
+		mesh.position.y += 0.1; 
+
+		// KellyCode: The reflections only appear on outside cells,
+		//can't see the reflection o the cell it lives on
 
 		// we create the reflection
 		// it's a cloned with a negative scale on the Y axis
 		var reflexion = mesh.clone();
 		reflexion.scale.y *= -1;
 		reflexion.material = reflexion.material.clone();
+		reflexion.material.transparent = true;
 		reflexion.material.side = THREE.BackSide;
 
 		piece.add(mesh);
@@ -116,11 +139,13 @@ function initCellFactory() {
 			specularMap:spec,
 			normalMap:norm,
 			//blending: THREE.AdditiveBlending,
-			opacity:0.5
+			opacity:0.75
 		});
 		//materials[c].normalScale.set(0.5,0.5);
 	}
 
+
+	// the squares on the board
 	function createCell(size,color) {
 		// container for the cell and its reflexion
 		var geo = new THREE.PlaneGeometry(size,size);
@@ -129,6 +154,7 @@ function initCellFactory() {
 		var randU = Math.random();
 		var randV = Math.random();
 
+		// KellyCode: Probably breaks in later THREE versions
 		var uvs = geo.faceVertexUvs[0][0];
 		for (var j = 0; j < uvs.length; j++) {
 			uvs[j].x += randU;
@@ -174,7 +200,7 @@ function createChessBoard(size) {
 
 	// some fake inner environment color for reflexion
 	var innerBoard = new THREE.Mesh (
-		geometries['3D/json/innerBoard.json'],
+		geometries['3D/glb/innerBoard.glb'],
 		new THREE.MeshBasicMaterial({
 			color:0x783e12
 		})
@@ -190,7 +216,7 @@ function createChessBoard(size) {
 	spec.tile(tiling);
 	norm.tile(tiling);
 
-	var geo = geometries['3D/json/board.json'];
+	var geo = geometries['3D/glb/board.glb'];
 	geo.computeBoundingBox();
 
 	var board = new THREE.Mesh (
@@ -205,6 +231,8 @@ function createChessBoard(size) {
 			normalScale: new THREE.Vector2(0.2,0.2)
 		})
 	);
+	
+	// TODO: remake board in Blender
 	var hCorrection = 0.62; // yeah I should just create a better geometry
 	board.scale.set(size,size*hCorrection,size);
 	lChessBoard.height = geo.boundingBox.min.y * board.scale.y;
@@ -221,8 +249,31 @@ function createChessBoard(size) {
 	return lChessBoard;
 }
 
-// KellyCode Removed createFloor() as it was an extremely
-// elaborate method just to make a plane, will be added back later
+// KellyCode Simplified createFloor()
+function createFloor(size, chessboardSize) {
+    const geometry = new THREE.PlaneGeometry(chessboardSize*5, chessboardSize*5);
+
+	let texture = textures['texture/floor.jpg'];
+
+	texture.wrapS = THREE.RepeatWrapping;
+  	texture.wrapT = THREE.RepeatWrapping;
+	texture.repeat.set(5.25, 5.25);
+
+    // Create a material for the plane
+    const material = new THREE.MeshBasicMaterial({ map: texture,color: 0x0032200, side: THREE.DoubleSide });
+
+    // Create the plane mesh
+    const floor = new THREE.Mesh(geometry, material);
+
+	floor.rotation.x += Math.PI/2;
+
+    if (SHADOW) {
+        floor.receiveShadow = true;
+    }
+
+    floor.name = "floor";
+    return floor;
+}
 
 // special highlighting materials
 var validCellMaterial = null;
@@ -285,8 +336,8 @@ function createSelectedMaterial() {
 			transparent:false,
 			map:diff,
 			specularMap:spec,
-			normalMap:norm
-			//opacity:0.4
+			normalMap:norm,
+			opacity:0.4
 		});
 		selectedMaterial[c].normalScale.set(0.3,0.3);
 	}

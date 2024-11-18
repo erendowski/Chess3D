@@ -16,14 +16,14 @@ var textures = {};
         var loaded = 0;
         // list of all mesh and texture
         var resources = [
-            "3D/json/knight.json",
-            "3D/json/king.json",
-            "3D/json/queen.json",
-            "3D/json/bishop.json",
-            "3D/json/rook.json",
-            "3D/json/pawn.json",
-            "3D/json/board.json",
-            "3D/json/innerBoard.json",
+            "3D/glb/knight.glb",
+            "3D/glb/king.glb",
+            "3D/glb/queen.glb",
+            "3D/glb/bishop.glb",
+            "3D/glb/rook.glb",
+            "3D/glb/pawn.glb",
+            "3D/glb/board.glb",
+            "3D/glb/innerBoard.glb",
             "texture/wood-0.jpg",
             "texture/wood-1.jpg",
             "texture/wood_N.jpg",
@@ -41,13 +41,26 @@ var textures = {};
         ];
 
         // for loading mesh
-        function loadJSON(url) {
-            var loader = new THREE.JSONLoader();
-            loader.load(url, function (geometry) {
-                geometries[url] = geometry;
+        function loadGLB(url) {
+            var loader = new THREE.GLTFLoader();
+            loader.load(
 
+            url,
+                
+            function (result) {
+                geometries[url] = result.scene.children[0].geometry;
                 loaded++;
                 checkLoad();
+            },
+        
+            function ( xhr ) {
+                console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+            },
+
+            // called when loading has errors
+            function ( error ) {
+                console.log(error);
+                console.log( 'An error happened' );
             });
         }
 
@@ -76,8 +89,8 @@ var textures = {};
         // load all the resources from the list
         resources.forEach(function (url) {
             switch (url.split(".").pop()) {
-                case "json":
-                    loadJSON(url);
+                case "glb":
+                    loadGLB(url);
                     break;
                 case "jpg":
                     loadImage(url);

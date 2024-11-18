@@ -131,11 +131,16 @@ var levels = [
 
         // we let chessBoard in global scope to use it for picking
         chessBoard = createChessBoard(BOARD_SIZE);
+        var floor = createFloor(FLOOR_SIZE, BOARD_SIZE);
+
+        //floor.position.y = -5*BOARD_SIZE/100;
+        floor.position.y = chessBoard.height;
 
         // KellyCode Removed createFloor() as it was an extremely elaborate method just to make a plane
 
         // create and fill the scene with default stuff
         scene = new THREE.Scene();
+        scene.add(floor);
         scene.add(spotlight);
         scene.add(whiteLight);
         scene.add(blackLight);
