@@ -158,11 +158,19 @@ function initCellFactory() {
 		var randU = Math.random();
 		var randV = Math.random();
 
-		// KellyCode: Probably breaks in later THREE versions
-		var uvs = geo.faceVertexUvs[0][0];
-		for (var j = 0; j < uvs.length; j++) {
-			uvs[j].x += randU;
-			uvs[j].y += randV;
+		// BROKEN Three r125
+		// var uvs = geo.faceVertexUvs[0][0];
+		// for (var j = 0; j < uvs.length; j++) {
+		// 	uvs[j].x += randU;
+		// 	uvs[j].y += randV;
+		// }
+		// REPLACED BY
+		// from https://discourse.threejs.org/t/facevertexuvs-for-buffergeometry/23040
+		const uvAttribute = geo.getAttribute( 'uv' );
+		const uv = new THREE.Vector2();
+		for ( let i = 0; i < uvAttribute.count; i ++ ) {
+			uv.fromBufferAttribute( uvAttribute, i );
+			uvAttribute.setXY( i, uv.x += randU, uv.y += randV );
 		}
 
 		var cell = new THREE.Mesh(geo,materials[color]);
