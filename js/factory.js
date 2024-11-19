@@ -83,12 +83,13 @@ function initPieceFactory () {
 			mesh.rotation.z += (color == WHITE) ? Math.PI/2 : -Math.PI/2;
 		}
 
-		// KellyCode: Conflicting (flashy) with the board so moved up a bit
+		// Piece mesh conflicting (flashy) with the board so moved up a bit
 		mesh.position.y += 0.1; 
 
-		// KellyCode: The reflections only appear on outside cells,
-		//can't see the reflection o the cell it lives on
-
+		// The reflections only appears on outside cells,
+		// and can't see the reflection on the cell it lives on
+		// removed for now
+		/*
 		// we create the reflection
 		// it's a cloned with a negative scale on the Y axis
 		var reflexion = mesh.clone();
@@ -96,9 +97,10 @@ function initPieceFactory () {
 		reflexion.material = reflexion.material.clone();
 		reflexion.material.transparent = true;
 		reflexion.material.side = THREE.BackSide;
+		*/
 
 		piece.add(mesh);
-		piece.add(reflexion);
+		//piece.add(reflexion);
 
 		piece.name = name;
 		piece.color = color;
@@ -158,14 +160,7 @@ function initCellFactory() {
 		var randU = Math.random();
 		var randV = Math.random();
 
-		// BROKEN Three r125
-		// var uvs = geo.faceVertexUvs[0][0];
-		// for (var j = 0; j < uvs.length; j++) {
-		// 	uvs[j].x += randU;
-		// 	uvs[j].y += randV;
-		// }
-		// REPLACED BY
-		// from https://discourse.threejs.org/t/facevertexuvs-for-buffergeometry/23040
+		// var uvs = geo.faceVertexUvs[0][0]; deprecated
 		const uvAttribute = geo.getAttribute( 'uv' );
 		const uv = new THREE.Vector2();
 		for ( let i = 0; i < uvAttribute.count; i ++ ) {
@@ -261,7 +256,7 @@ function createChessBoard(size) {
 	return lChessBoard;
 }
 
-// KellyCode Simplified createFloor()
+// Simplified createFloor()
 function createFloor(size, chessboardSize) {
     const geometry = new THREE.PlaneGeometry(chessboardSize*5, chessboardSize*5);
 

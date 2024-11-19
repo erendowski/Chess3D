@@ -78,13 +78,12 @@ var levels = [
         // RENDERER
         renderer = new THREE.WebGLRenderer({ antialias: true });
 
-        // KellyCode: Deprecated r115
-        //renderer.gammaInput = true;
-        //renderer.gammaOutput = true;
+        // Deprecated r115
+        // renderer.gammaInput = true;
+        // renderer.gammaOutput = true;
 
-        // Suggested but looks washed out unless I add
-        // "texture.encoding = THREE.sRGBEncoding;"
-        // to the texture load process, however, I'm not seeing a gain
+        // "texture.encoding = THREE.sRGBEncoding;" added to
+        // the texture load process to make this work
         renderer.outputEncoding = THREE.sRGBEncoding; 
 
         renderer.setSize(canvasWidth, canvasHeight);
@@ -143,8 +142,6 @@ var levels = [
 
         //floor.position.y = -5*BOARD_SIZE/100;
         floor.position.y = chessBoard.height;
-
-        // KellyCode Removed createFloor() as it was an extremely elaborate method just to make a plane
 
         // create and fill the scene with default stuff
         scene = new THREE.Scene();
