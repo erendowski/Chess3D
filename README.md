@@ -1,6 +1,6 @@
 KellyCode is gradually updating this to the THREE current version with modules - just for fun
 
-Currebtly at Three r130
+Currently at Three r130
 
 Chess3D
 =======
