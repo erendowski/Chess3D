@@ -89,6 +89,7 @@ function initPieceFactory () {
 		// The reflections only appears on outside cells,
 		// and can't see the reflection on the cell it lives on
 		// removed for now
+		// Will redo with Reflector.js
 		/*
 		// we create the reflection
 		// it's a cloned with a negative scale on the Y axis
