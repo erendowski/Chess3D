@@ -88,6 +88,7 @@ function initPieceFactory () {
 
 		// The reflections only appears on outside cells,
 		// and can't see the reflection on the cell it lives on
+		// and the method was much more complex than needed
 		// removed for now
 		// Will redo with Reflector.js
 		/*
