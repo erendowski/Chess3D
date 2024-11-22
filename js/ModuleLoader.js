@@ -1,19 +1,20 @@
-
 /*
-Not used atm but when I get to modules required this
-is a hack to add a module and test without the hoopla.
-
 It simply loads the module and makes it look like a normal
-js THREE load and then adds the scripts that use it.  It works
+window js object and then adds the scripts that use it.  It works
 */
 
 import * as THREE from "three";
+import { OrbitControls } from './lib/threes/r150/OrbitControls.js';
+import { GLTFLoader } from './lib/threes/r150/GLTFLoader.js';
 
-class LoadingModule {
+
+class ModuleLoader {
     static init() {
         console.log("Loading a new THREE");
-        
+
         window.THREE = THREE;
+        window.OrbitControls = OrbitControls;
+        window.GLTFLoader = GLTFLoader;
 
         function appendScript(path) {
             // 1. Create a new script element
@@ -28,6 +29,9 @@ class LoadingModule {
         }
 
         /*
+        former index.html script loads
+        <script type="text/javascript" src="js/three-extend.js"></script>
+        <script type="text/javascript" src="js/loading.js"></script>
         <script type="text/javascript" src="js/Cell.js"></script>
         <script type="text/javascript" src="js/factory.js"></script>
         <script type="text/javascript" src="js/pgnParser.js"></script>
@@ -35,6 +39,8 @@ class LoadingModule {
         <script type="text/javascript" src="js/chess.js"></script>
         */
 
+        appendScript("js/three-extend.js");
+        appendScript("js/loading.js");
         appendScript("js/Cell.js");
         appendScript("js/factory.js");
         appendScript("js/pgnParser.js");
@@ -43,4 +49,4 @@ class LoadingModule {
     }
 }
 
-export { LoadingModule };
+export { ModuleLoader };

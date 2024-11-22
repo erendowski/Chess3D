@@ -42,7 +42,7 @@ var textures = {};
 
         // for loading mesh
         function loadGLB(url) {
-            var loader = new THREE.GLTFLoader();
+            var loader = new GLTFLoader();
             loader.load(
 
             url,

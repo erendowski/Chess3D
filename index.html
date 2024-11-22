@@ -65,11 +65,22 @@
       }
     </style>
 
-    
-<!-- libraries //-->    
-<script type="text/javascript" src="js/lib/threes/r145/three.min.js"></script>
-<script type="text/javascript" src="js/lib/threes/r145/OrbitControls.js"></script>
-<script type="text/javascript" src="js/lib/threes/r145/GLTFLoader.js"></script>
+
+<!-- Three Module -->
+<!-- Three revision directory "r170" needs to be updated here and in ModuleLoader.js -->
+<script type="importmap">
+  {
+      "imports": {
+          "three": "./js/lib/threes/r150/three.module.js",
+          "/js/lib/threes/utils/": "/js/lib/threes/r150/utils/"
+      }
+  }
+</script>
+<script type="module">
+  import { ModuleLoader } from "./js/ModuleLoader.js";
+  // init is a static
+  ModuleLoader.init();
+</script>
 
 <!-- JQuery //-->
 <link href="css/dark-hive/jquery-ui-1.10.3.custom.css" rel="stylesheet">
@@ -95,13 +106,14 @@ var COLS = 8;
 var ROWS = 8;
 var LOADING_BAR_SCALE = 0.3;
 </script>
-<script type="text/javascript" src="js/three-extend.js"></script>
+
+<!-- <script type="text/javascript" src="js/three-extend.js"></script>
 <script type="text/javascript" src="js/loading.js"></script>
 <script type="text/javascript" src="js/Cell.js"></script>
 <script type="text/javascript" src="js/factory.js"></script>
 <script type="text/javascript" src="js/pgnParser.js"></script>
 <script type="text/javascript" src="js/gui.js"></script>
-<script type="text/javascript" src="js/chess.js"></script>
+<script type="text/javascript" src="js/chess.js"></script> -->
 
   </head>
   <body id="container">

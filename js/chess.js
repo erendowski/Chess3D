@@ -101,7 +101,7 @@ var levels = [
         // CAMERA
         camera = new THREE.PerspectiveCamera(45, canvasRatio, 1, 40000);
         // CONTROLS
-        cameraControls = new THREE.OrbitControls(camera, renderer.domElement);
+        cameraControls = new OrbitControls(camera, renderer.domElement);
         // limitations
         cameraControls.minPolarAngle = 0;
         cameraControls.maxPolarAngle = (80 * Math.PI) / 180;
