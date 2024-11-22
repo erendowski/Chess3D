@@ -84,7 +84,10 @@ var levels = [
 
         // "texture.encoding = THREE.sRGBEncoding;" added to
         // the texture load process to make this work
-        renderer.outputEncoding = THREE.sRGBEncoding; 
+        //renderer.outputEncoding = THREE.sRGBEncoding; 
+        // per THREE r152
+        renderer.outputColorSpace = THREE.SRGBColorSpace ; 
+        renderer.useLegacyLights = true;
 
         renderer.setSize(canvasWidth, canvasHeight);
 

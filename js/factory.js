@@ -47,7 +47,7 @@ function initPieceFactory () {
 			map:colors[color],
 			normalMap:norm,
 			specularMap:spec,
-			wireframe:WIREFRAME
+			//wireframe:WIREFRAME
 		});
 
 		material.normalScale.set(0.3,0.3);
