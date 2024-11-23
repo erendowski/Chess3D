@@ -65,9 +65,8 @@ var textures = {};
                 url,
                 // onLoad callback
                 function (texture) {
-                    //texture.encoding = THREE.sRGBEncoding;
+                    // texture.encoding = THREE.sRGBEncoding;
                     // per THREE r152
-                    // Note: Non-color textures (normal maps, etc.) should use NoColorSpace, the default.
                     texture.colorSpace = THREE.SRGBColorSpace;
                     textures[url] = texture;
                     loaded++;

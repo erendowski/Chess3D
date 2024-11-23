@@ -10,7 +10,6 @@ import { GLTFLoader } from './lib/threes/r170/GLTFLoader.js';
 
 class ModuleLoader {
     static init() {
-        console.log("Loading a new THREE");
 
         window.THREE = THREE;
         window.OrbitControls = OrbitControls;
