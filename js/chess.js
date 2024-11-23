@@ -91,7 +91,7 @@ var levels = [
         // RENDERER.USELEGACYLIGHTS = TRUE;
         // per THREE r155
         // https://discourse.threejs.org/t/updates-to-lighting-in-three-js-r155/53733
-        renderer.useLegacyLights = false;
+        // renderer.useLegacyLights = false;
 
         renderer.setSize(canvasWidth, canvasHeight);
 
@@ -124,7 +124,7 @@ var levels = [
         // LIGHTING
         // THREE r155 significantly changes lighting. If renderer.useLegacyLights
         // isn't set to true (and it shouldn't be for future compat) lights are
-        // considerably darker so upped the light intensities
+        // considerably darker so upped all light intensities
         // SEE https://discourse.threejs.org/t/updates-to-lighting-in-three-js-r155/53733
         var spotlight = new THREE.SpotLight(0xffffff, 10000);
         spotlight.position.set(0, 400, 0);

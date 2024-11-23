@@ -28,12 +28,6 @@ var textures = {};
             "texture/wood-1.jpg",
             "texture/wood_N.jpg",
             "texture/wood_S.jpg",
-            "texture/knight-ao.jpg",
-            "texture/rook-ao.jpg",
-            "texture/king-ao.jpg",
-            "texture/bishop-ao.jpg",
-            "texture/queen-ao.jpg",
-            "texture/pawn-ao.jpg",
             "texture/floor.jpg",
             "texture/floor_N.jpg",
             "texture/floor_S.jpg",
@@ -97,6 +91,9 @@ var textures = {};
                     loadGLB(url);
                     break;
                 case "jpg":
+                    loadImage(url);
+                    break;
+                case "png":
                     loadImage(url);
                     break;
                 default:

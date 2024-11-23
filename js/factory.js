@@ -52,15 +52,22 @@ function initPieceFactory () {
 
 		material.normalScale.set(0.3,0.3);
 
-		// urls of geometry and lightmap
+		/*
+		lightmap here breaks in three r160 for failing format requirements
+		var urlAO='texture/'+name+'-ao.jpg';
+		Textures where each pixel contains red, green, blue, and alpha
+		values (RGBA) with each color value represented as an unsigned 8-bit
+		integer, you need to ensure your image data is structured as a set of
+		bytes where each pixel takes up 4 bytes, with the first byte representing
+		red, the second green, the third blue, and the fourth representing the
+		alpha channel, and each byte ranging from 0 to 255 (representing the
+		full range of 8-bit unsigned integers). 
+		*/
+
+		// url of geometry
 		var urlGlb = '3D/glb/'+name+'.glb';
-		var urlAO   = 'texture/'+name+'-ao.jpg';
 
 		var geo = geometries[urlGlb];
-		// the lightmap breaks the texture
-		var light = textures[urlAO];
-		light.format = THREE.LuminanceFormat;
-		material.lightMap = light;
 
 		var mesh  = new THREE.Mesh(geo,material);
 
