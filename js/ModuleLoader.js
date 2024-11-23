@@ -1,11 +1,11 @@
 /*
-It simply loads the module and makes it look like a normal
-window js object and then adds the scripts that use it.  It works
+Simply loads the module and makes it look like a normal
+window js object and then adds the scripts that use it.
 */
 
 import * as THREE from "three";
-import { OrbitControls } from './lib/threes/r160/OrbitControls.js';
-import { GLTFLoader } from './lib/threes/r160/GLTFLoader.js';
+import { OrbitControls } from './lib/threes/r165/OrbitControls.js';
+import { GLTFLoader } from './lib/threes/r165/GLTFLoader.js';
 
 
 class ModuleLoader {
@@ -39,6 +39,7 @@ class ModuleLoader {
         <script type="text/javascript" src="js/chess.js"></script>
         */
 
+        // now loaded after modules
         appendScript("js/three-extend.js");
         appendScript("js/loading.js");
         appendScript("js/Cell.js");
