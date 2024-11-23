@@ -4,8 +4,8 @@ window js object and then adds the scripts that use it.
 */
 
 import * as THREE from "three";
-import { OrbitControls } from './lib/threes/r165/OrbitControls.js';
-import { GLTFLoader } from './lib/threes/r165/GLTFLoader.js';
+import { OrbitControls } from './lib/threes/r170/OrbitControls.js';
+import { GLTFLoader } from './lib/threes/r170/GLTFLoader.js';
 
 
 class ModuleLoader {
