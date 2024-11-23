@@ -82,12 +82,16 @@ var levels = [
         // renderer.gammaInput = true;
         // renderer.gammaOutput = true;
 
-        // "texture.encoding = THREE.sRGBEncoding;" added to
-        // the texture load process to make this work
-        //renderer.outputEncoding = THREE.sRGBEncoding; 
+        // RENDERER.OUTPUTCOLORSPACE
+        // texture.colorSpace = THREE.SRGBColorSpace; added to
+        // texture loading (loadImage) to make this work
         // per THREE r152
-        renderer.outputColorSpace = THREE.SRGBColorSpace ; 
-        renderer.useLegacyLights = true;
+        renderer.outputColorSpace = THREE.SRGBColorSpace ;
+
+        // RENDERER.USELEGACYLIGHTS = TRUE;
+        // per THREE r155
+        // https://discourse.threejs.org/t/updates-to-lighting-in-three-js-r155/53733
+        renderer.useLegacyLights = false;
 
         renderer.setSize(canvasWidth, canvasHeight);
 
@@ -103,8 +107,10 @@ var levels = [
 
         // CAMERA
         camera = new THREE.PerspectiveCamera(45, canvasRatio, 1, 40000);
+
         // CONTROLS
         cameraControls = new OrbitControls(camera, renderer.domElement);
+
         // limitations
         cameraControls.minPolarAngle = 0;
         cameraControls.maxPolarAngle = (80 * Math.PI) / 180;
@@ -116,8 +122,12 @@ var levels = [
         camera.position.set(0, 100, 100);
 
         // LIGHTING
-        var spotlight = new THREE.SpotLight(0xffffff, 0.25);
-        spotlight.position.set(0, 300, 0);
+        // THREE r155 significantly changes lighting. If renderer.useLegacyLights
+        // isn't set to true (and it shouldn't be for future compat) lights are
+        // considerably darker so upped the light intensities
+        // SEE https://discourse.threejs.org/t/updates-to-lighting-in-three-js-r155/53733
+        var spotlight = new THREE.SpotLight(0xffffff, 10000);
+        spotlight.position.set(0, 400, 0);
         spotlight.angle = Math.PI / 2;
         spotlight.exponent = 50.0;
         spotlight.target.position.set(0, 0, 0);
@@ -130,9 +140,9 @@ var levels = [
             spotlight.shadowBias = -0.001;
         }
 
-        var whiteLight = new THREE.PointLight(0xffeedd, 0.2);
+        var whiteLight = new THREE.PointLight(0xffeedd, 10000);
         whiteLight.position.set(0, 0, 100);
-        var blackLight = new THREE.PointLight(0xffeedd, 0.2);
+        var blackLight = new THREE.PointLight(0xffeedd, 10000);
         blackLight.position.set(0, 0, -100);
 
         // generate createPiece and createCell functions
@@ -157,7 +167,7 @@ var levels = [
         // to make everything black in the background
         scene.fog = new THREE.FogExp2(0x000000, 0.001);
         // little reddish to fake a bit of bounce lighting
-        scene.add(new THREE.AmbientLight(0x333333));
+        scene.add(new THREE.AmbientLight(0x333333, 10));
 
         // for picking
         raycaster = new THREE.Raycaster();

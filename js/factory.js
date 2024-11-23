@@ -58,9 +58,9 @@ function initPieceFactory () {
 
 		var geo = geometries[urlGlb];
 		// the lightmap breaks the texture
-		//var light = textures[urlAO];
-		//light.format = THREE.LuminanceFormat;
-		//material.lightMap = light;
+		var light = textures[urlAO];
+		light.format = THREE.LuminanceFormat;
+		material.lightMap = light;
 
 		var mesh  = new THREE.Mesh(geo,material);
 
