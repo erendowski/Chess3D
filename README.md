@@ -1,5 +1,5 @@
 November 2024 KellyCode updated to Three r170  
-KellyCode clone this to Chess3D_SA after THREE r170 update
+and cloned to a new project, Chess3D_SA
 
 Chess3D
 =======
