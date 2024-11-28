@@ -1,3 +1,6 @@
+November 2024 KellyCode updated to Three r170  
+and cloned to a new project, Chess3D_SA
+
 Chess3D
 =======
 
