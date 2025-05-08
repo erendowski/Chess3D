@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title></title>
+    <title>3D Chess</title>
     <style type="text/css">
       html,body,canvas {
         margin:0;
@@ -63,6 +63,45 @@
       #tips {
         text-align: center;
       }
+
+      #webgl-error {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 20px;
+        background: rgba(0,0,0,0.8);
+        color: #ff4444;
+        border: 1px solid #ff4444;
+        text-align: center;
+        display: none;
+      }
+
+      /* Doğrudan açılma hatası için uyarı mesajı */
+      #local-file-warning {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: rgba(255, 68, 68, 0.8);
+        color: white;
+        padding: 10px;
+        text-align: center;
+        font-weight: bold;
+        display: none;
+        z-index: 9999;
+      }
+      
+      #run-locally-btn {
+        background: #4CAF50;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-left: 10px;
+        border-radius: 4px;
+      }
     </style>
 <!-- libraries //-->    
 <script type="text/javascript" src="js/lib/three.min.js"></script>
@@ -79,6 +118,7 @@
 
 <!-- 3D //-->
 <script type="text/javascript">
+// Global değişkenler
 var WIREFRAME = false;
 var SHADOW = false;
 var BLACK = 0;
@@ -91,6 +131,74 @@ var FLOOR_SIZE = 2000;
 var COLS = 8;
 var ROWS = 8;
 var LOADING_BAR_SCALE = 0.3;
+
+// Yerel dosya sisteminde çalışıp çalışmadığımızı kontrol et
+function checkIfLocalFile() {
+  return window.location.protocol === 'file:';
+}
+
+// Lokal sunucu başlatma fonksiyonu (Windows için)
+function startLocalServer() {
+  // Dosya yolunu al
+  var path = window.location.pathname;
+  var directory = path.substring(0, path.lastIndexOf('/'));
+  
+  // Komutu hazırla
+  var command = 'start cmd.exe /K "cd /d ' + directory + ' && python -m http.server 8000 && echo Tarayıcınızda http://localhost:8000 adresine giderek projeyi görebilirsiniz."';
+  
+  // Kullanıcıya sunucuya geçiş yapması gerektiğini söyle
+  alert('Yerel bir HTTP sunucusu başlatılacak. İşlem tamamlandığında tarayıcınızda http://localhost:8000 adresine gidin.');
+  
+  // Bir HTML bağlantısı kullan (JavaScript'in yerel dosya sistemi üzerinde komut çalıştırma yetkisi yoktur,
+  // kullanıcının manuel olarak batch dosyasını çalıştırması gerekir)
+  window.location.href = 'start_server.bat';
+}
+
+// WebGL yükleme kontrolü
+window.addEventListener('DOMContentLoaded', function() {
+  // Yerel dosya mı kontrol et ve uyarı göster
+  if (checkIfLocalFile()) {
+    var warningDiv = document.createElement('div');
+    warningDiv.id = 'local-file-warning';
+    warningDiv.innerHTML = 'Bu uygulama bir web sunucusu üzerinde çalışmalıdır. Yerel dosya olarak açtığınızda modeller yüklenmeyebilir.' +
+                        '<button id="run-locally-btn">Yerel Sunucu Başlat</button>';
+    document.body.appendChild(warningDiv);
+    warningDiv.style.display = 'block';
+    
+    // Butona tıklama olayı ekle
+    document.getElementById('run-locally-btn').addEventListener('click', function() {
+      startLocalServer();
+    });
+  }
+
+  // WebGL desteğini kontrol et
+  function checkWebGL() {
+    try {
+      var canvas = document.createElement('canvas');
+      return !!(window.WebGLRenderingContext && 
+                (canvas.getContext('webgl') || 
+                 canvas.getContext('experimental-webgl')));
+    } catch(e) {
+      return false;
+    }
+  }
+  
+  if (!checkWebGL()) {
+    var errorDiv = document.createElement('div');
+    errorDiv.id = 'webgl-error';
+    errorDiv.innerHTML = '<h2>WebGL Hatası</h2><p>Tarayıcınız WebGL desteklemiyor veya WebGL devre dışı bırakılmış.</p>' +
+                       '<p>Lütfen başka bir tarayıcı deneyin veya tarayıcı ayarlarınızdan WebGL\'i etkinleştirin.</p>';
+    document.body.appendChild(errorDiv);
+    errorDiv.style.display = 'block';
+  }
+});
+
+// THREE.js'in CORS hatalarını önlemek için
+try {
+  THREE.ImageUtils.crossOrigin = '';
+} catch(e) {
+  console.log("THREE.ImageUtils.crossOrigin ataması yapılamadı.");
+}
 </script>
 <script type="text/javascript" src="js/three-extend.js"></script>
 <script type="text/javascript" src="js/loading.js"></script>
@@ -100,7 +208,18 @@ var LOADING_BAR_SCALE = 0.3;
 <script type="text/javascript" src="js/gui.js"></script>
 <script type="text/javascript" src="js/chess.js"></script>
 <script type="text/javascript">
-
+// Hata yakalama için ek güvenlik
+window.addEventListener('error', function(e) {
+  console.error('Hata yakalandı:', e.message);
+  // Yükleme sırasında bir hata oluştuğunda kullanıcıya bildir
+  if (e.message.includes('texture') || e.message.includes('model') || e.message.includes('CORS')) {
+    if (!document.getElementById('local-file-warning').style.display || 
+        document.getElementById('local-file-warning').style.display === 'none') {
+      
+      document.getElementById('local-file-warning').style.display = 'block';
+    }
+  }
+});
 </script>
   </head>
   <body id="container">

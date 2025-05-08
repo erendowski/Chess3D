@@ -42,29 +42,113 @@ var textures   = {};
 			'texture/fakeShadow.jpg'
 		];
 
-		// for loading mesh
-		function loadJSON (url) {
+		// for loading mesh - güvenlik kısıtlaması kontrolü için modifiye edildi
+		function loadJSON(url) {
 			var loader = new THREE.JSONLoader();
-			loader.load(url, function(geometry) {
-
-				geometries[url] = geometry;
-
+			
+			// Yerel dosya erişimi için crossOrigin ayarla
+			if (window.location.protocol === 'file:') {
+				try {
+					loader.crossOrigin = '';
+				} catch(e) {
+					console.warn("CrossOrigin ayarlanamadı");
+				}
+			}
+			
+			// Hata yakalama mekanizması ekle
+			try {
+				loader.load(url, 
+					// Başarı callback
+					function(geometry) {
+						geometries[url] = geometry;
+						loaded++;
+						checkLoad();
+					},
+					// İlerleme callback
+					undefined,
+					// Hata callback
+					function(error) {
+						console.error("Model yükleme hatası (" + url + "): ", error);
+						
+						// Hata durumunda uyarı göster
+						if (!document.getElementById('model-error')) {
+							var errorDiv = document.createElement('div');
+							errorDiv.id = 'model-error';
+							errorDiv.style.position = 'fixed';
+							errorDiv.style.bottom = '60px';
+							errorDiv.style.left = '0';
+							errorDiv.style.right = '0';
+							errorDiv.style.backgroundColor = 'rgba(255,0,0,0.8)';
+							errorDiv.style.color = 'white';
+							errorDiv.style.padding = '10px';
+							errorDiv.style.textAlign = 'center';
+							errorDiv.innerHTML = 'Bu uygulama bir web sunucusu üzerinde çalıştırılmalıdır. Modeller file:// protokolünde yüklenemez. <button onclick="restartWithServer()">Yerel Sunucu Başlat</button>';
+							document.body.appendChild(errorDiv);
+						}
+						
+						// Yüklemeyi sonlandırmak yerine, sahte başarı ile ilerlet
+						loaded++;
+						checkLoad();
+					}
+				);
+			} catch(e) {
+				console.error("JSONLoader hatası: ", e);
+				// Hata olursa bile ilerlemeye devam et
 				loaded++;
 				checkLoad();
-			});
+			}
 		}
 
-		// for loading texture
+		// for loading texture - güvenlik kısıtlaması kontrolü için modifiye edildi
 		function loadImage(url) {
-			THREE.ImageUtils.loadTexture(
-				url,
-				THREE.UVMapping(),
-				function(texture) {
-					textures[url] = texture;
-					loaded++;
-					checkLoad();
+			try {
+				// crossOrigin özelliğini ayarlamaya çalış
+				if (window.location.protocol === 'file:') {
+					try {
+						THREE.ImageUtils.crossOrigin = '';
+					} catch(e) {
+						console.warn("ImageUtils crossOrigin ayarlanamadı");
+					}
 				}
-			);
+				
+				THREE.ImageUtils.loadTexture(
+					url,
+					THREE.UVMapping(),
+					function(texture) {
+						textures[url] = texture;
+						loaded++;
+						checkLoad();
+					},
+					function(error) {
+						console.error("Texture yükleme hatası (" + url + "): ", error);
+						
+						// Hata durumunda uyarı göster
+						if (!document.getElementById('texture-error') && !document.getElementById('model-error')) {
+							var errorDiv = document.createElement('div');
+							errorDiv.id = 'texture-error';
+							errorDiv.style.position = 'fixed';
+							errorDiv.style.bottom = '60px';
+							errorDiv.style.left = '0';
+							errorDiv.style.right = '0';
+							errorDiv.style.backgroundColor = 'rgba(255,0,0,0.8)';
+							errorDiv.style.color = 'white';
+							errorDiv.style.padding = '10px';
+							errorDiv.style.textAlign = 'center';
+							errorDiv.innerHTML = 'Bu uygulama bir web sunucusu üzerinde çalıştırılmalıdır. Dokular file:// protokolünde yüklenemez. <button onclick="restartWithServer()">Yerel Sunucu Başlat</button>';
+							document.body.appendChild(errorDiv);
+						}
+						
+						// Yüklemeyi sonlandırmak yerine, sahte başarı ile ilerlet
+						loaded++;
+						checkLoad();
+					}
+				);
+			} catch(e) {
+				console.error("Texture yükleme hatası: ", e);
+				// Hata olursa bile ilerlemeye devam et
+				loaded++;
+				checkLoad();
+			}
 		}
 
 		// load all the resources from the list
@@ -89,7 +173,6 @@ var textures   = {};
 				setTimeout(onLoaded,0.1);
 			}
 		}
-
 	}
 
 	function initGlow() {
@@ -299,6 +382,11 @@ var textures   = {};
 		initTips();
 		initBar();
 		centering();
+		
+		// Yerel dosya kısıtlaması kontrolü
+		if (window.location.protocol === 'file:') {
+			console.warn("Bu uygulama bir web sunucusu üzerinde çalıştırılmalıdır. Modeller 'file://' protokolünde yüklenemeyebilir.");
+		}
 
 		loadResources();
 		//$bar.update(1);
@@ -306,3 +394,17 @@ var textures   = {};
 
 	window.removeLoader = removeLoader;
 })();
+
+// Yerel sunucu başlatma yardımcı fonksiyonu 
+window.restartWithServer = function() {
+	if (window.confirm("Yerel sunucu başlatmak ve uygulamayı localhost:8000 adresinde çalıştırmak istiyor musunuz?")) {
+		try {
+			window.location.href = 'start_server.bat';
+			setTimeout(function() {
+				window.location.href = 'http://localhost:8000';
+			}, 3000); // Sunucunun başlaması için 3 saniye bekle
+		} catch(e) {
+			alert("Sunucu başlatılamadı. Lütfen 'start_server.bat' dosyasını manuel olarak çalıştırın ve tarayıcınızda http://localhost:8000 adresine gidin.");
+		}
+	}
+};
